@@ -30,90 +30,19 @@ public class CharacterReplacement {
      * 在执行上述操作后，返回 包含相同字母的最长子字符串的长度。
      */
     public static int characterReplacement(String s, int k) {
-        if (s.length() <= k) {
-            return k;
-        }
         char[] arr = s.toCharArray();
-        int result = 0;
-        int windowL = 0, windowR = 0, windowValue = arr[0];
-        int tempK = k, tempResult;
-        boolean hasNext = false;
-        int nextWindowL = 0, nextWindowR = 0, nextWindowValue = arr[0];
-
-        while (true) {
-            if (windowR+1 < arr.length) {
-                //判断窗口是否可右扩
-                if (windowValue == arr[windowR+1]) {
-                    windowR++;
-                    continue;
-                }
-                if (!hasNext) {
-                    nextWindowL = windowR+1;
-                    nextWindowR = windowR+1;
-                    nextWindowValue = arr[windowR+1];
-                    hasNext = true;
-                }
-                if (tempK > 0) {
-                    tempK--;
-                    windowR++;
-                    continue;
-                }
-                tempResult = windowR - windowL + 1;
-                if (tempResult > result) {
-                    result = tempResult;
-                }
-                if (hasNext) {
-                    windowL = nextWindowL;
-                    windowR = nextWindowR;
-                    windowValue = nextWindowValue;
-                    tempK = k;
-                    hasNext = false;
-                    continue;
-                }
-                break;
-            } else if (windowL > 0) {
-                //判断窗口是否可左扩
-                if (windowValue == arr[windowL - 1]) {
-                    windowL--;
-                    continue;
-                } else if (tempK > 0) {
-                    tempK--;
-                    windowL--;
-                    continue;
-                }
-                tempResult = windowR - windowL + 1;
-                if (tempResult > result) {
-                    result = tempResult;
-                }
-                if (hasNext) {
-                    windowL = nextWindowL;
-                    windowR = nextWindowR;
-                    windowValue = nextWindowValue;
-                    tempK = k;
-                    hasNext = false;
-                    continue;
-                }
-                break;
-            } else {
-                tempResult = windowR - windowL + 1;
-                if (tempResult > result) {
-                    result = tempResult;
-                }
-                if (hasNext) {
-                    windowL = nextWindowL;
-                    windowR = nextWindowR;
-                    windowValue = nextWindowValue;
-                    tempK = k;
-                    hasNext = false;
-                    continue;
-                }
-                break;
+        int[] freq = new int[26];
+        int left = 0, right = 0, i = 0, maxCount = 0;
+        while (right < arr.length) {
+            i = arr[right]-'A';
+            freq[i]++;
+            maxCount = Math.max(maxCount, freq[i]);
+            while (right - left + 1 > maxCount + k) {
+                freq[arr[left++]-'A']--;
             }
+            right++;
         }
-        tempResult = windowR-windowL+1;
-        if (tempResult > result) {
-            result = tempResult;
-        }
-        return result;
+        return Math.min(maxCount + k, arr.length);
     }
+
 }
